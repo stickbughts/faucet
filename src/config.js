@@ -5,5 +5,29 @@ export const DISCORD_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID;
 export const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 export const DISCORD_SERVER_ID = process.env.DISCORD_SERVER_ID;
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+
+export const HEDERA_NETWORK = process.env.HEDERA_NETWORK;
+
+export const HEDERA_OPERATOR_ID = process.env.HEDERA_OPERATOR_ID;
+export const HEDERA_OPERATOR_PRIVATE_KEY = process.env.HEDERA_OPERATOR_PRIVATE_KEY;
+
+export const HEDERA_TOKEN_DECIMALS = process.env.HEDERA_TOKEN_DECIMALS;
+export const HEDERA_TOKEN_DRIP_RATE = process.env.HEDERA_TOKEN_DRIP_RATE;
+export const HEDERA_TOKEN_ID = process.env.HEDERA_TOKEN_ID;
+
+export const HEDERA_REST_API_VERSION = process.env.HEDERA_REST_API_VERSION;
+
 export const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 export const SUPABASE_URL = process.env.SUPABASE_URL;
+
+// Derived configs below:
+export const HEDERA_BASE_URL = (() => {
+  switch (HEDERA_NETWORK) {
+    case "mainnet":
+      return `https://mainnet-public.mirrornode.hedera.com/api/${HEDERA_REST_API_VERSION}`;
+    case "testnet":
+      return `https://testnet.mirrornode.hedera.com/api/${HEDERA_REST_API_VERSION}`;
+    case "previewnet":
+      return `https://previewnet.mirrornode.hedera.com/api/${HEDERA_REST_API_VERSION}`;
+  }
+})()
