@@ -40,7 +40,7 @@ discordBot.on("interactionCreate", async (interaction) => {
           .select("accountId")
           .eq("accountId", accountId);
         if (error || data.length > 1) {
-          console.error(`Error: ${error}`);
+          console.error(`Error: ${error.data}`);
           console.error(`Data: ${data}`);
           interaction.reply(`Something went wrong - try again!`);
           break;
