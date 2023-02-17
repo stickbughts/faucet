@@ -1,6 +1,6 @@
 
 import { ApplicationCommandOptionType, REST, Routes } from "discord.js";
-import * as config from "./config.js";
+import * as config from "../config.js";
 
 const clientId = config.DISCORD_CLIENT_ID;
 const serverId = config.DISCORD_SERVER_ID;

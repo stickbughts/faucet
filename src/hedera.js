@@ -5,7 +5,7 @@ import {
   TransferTransaction,
 } from "@hashgraph/sdk";
 import fetch from 'node-fetch'
-import * as config from "./config.js";
+import * as config from "../config.js";
 
 const hederaBaseUrl = config.HEDERA_BASE_URL;
 const operatorId = AccountId.fromString(config.HEDERA_OPERATOR_ID);

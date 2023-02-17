@@ -3,7 +3,7 @@ import { tokenPayout, tokenAssociationCheck } from "./hedera.js";
 import { registerCommands } from "./commands.js";
 import { supabase } from "./db.js";
 import { clearTableEvery24Hours } from "./cronjob.js";
-import * as config from "./config.js";
+import * as config from "../config.js";
 
 const discordBot = new DiscordClient({
   intents: [
