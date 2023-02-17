@@ -1,5 +1,10 @@
 import dotenv from "dotenv";
-dotenv.config();
+import path from "path";
+import {fileURLToPath} from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const pathToEnv = path.join(__dirname, '/.env');
+dotenv.config({path: pathToEnv});
 
 export const DISCORD_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID;
 export const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
