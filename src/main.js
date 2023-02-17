@@ -2,6 +2,7 @@ import { Client as DiscordClient, IntentsBitField } from "discord.js";
 import { tokenPayout, tokenAssociationCheck } from "./hedera.js";
 import { registerCommands } from "./commands.js";
 import { supabase } from "./db.js";
+import { clearTableEvery24Hours } from "./cronjob.js";
 import * as config from "./config.js";
 
 const discordBot = new DiscordClient({
@@ -44,7 +45,8 @@ discordBot.on("interactionCreate", async (interaction) => {
           interaction.reply(`Something went wrong - try again!`);
           break;
         } else if (data.length === 1) {
-          interaction.reply(`Its prayers has already been received. Your allotment of PACT was given.`);
+          const { hrs, mins } = getResetTime();
+          interaction.reply(`Your allotment of PACT was given, check back in ${hrs} hours and ${mins} minutes.`);
           break;
         } else {
           const isAssociated = await tokenAssociationCheck(accountId);
@@ -67,11 +69,11 @@ discordBot.on("interactionCreate", async (interaction) => {
 });
 
 const getResetTime = () => {
-  const resetTime =
-    24 * 60 - Math.floor((new Date().getTime() / (1000 * 60)) % (24 * 60));
-  const hrs = Math.floor(timeTilReset / 60);
-  const mins = Math.floor(timeTilReset % 60);
+  const resetTime = 24 * 60 - Math.floor((new Date().getTime() / (1000 * 60)) % (24 * 60));
+  const hrs = Math.floor(resetTime / 60);
+  const mins = Math.floor(resetTime % 60);
   return { hrs, mins };
 };
 
+clearTableEvery24Hours();
 discordBot.login(config.DISCORD_TOKEN);
