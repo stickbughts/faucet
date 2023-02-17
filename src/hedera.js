@@ -49,7 +49,6 @@ export const tokenPayout = async (accountId) => {
       .sign(operatorKey);
     const txResponse = await tx.execute(client);
     const receipt = await txResponse.getReceipt(client);
-    // if tx success, insert values into table...
     if (receipt.status._code == 22) {
       console.debug(`${payout / Math.pow(10, tokenDecimals)} $PACT transferred to ${accountId}`);
     } else {
