@@ -78,7 +78,7 @@ Restart=always
 RestartSec=10
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=ss-server
+SyslogIdentifier=pactbot
 User=root
 
 [Install]
