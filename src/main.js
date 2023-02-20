@@ -54,9 +54,10 @@ discordBot.on("interactionCreate", async (interaction) => {
             interaction.reply(`You have not associated with the token ID: ${config.HEDERA_TOKEN_ID}`);
             break;
           }
+          await interaction.deferReply();
           await tokenPayout(accountId);
           await supabase.from("prayers").insert([{ accountId }]);
-          interaction.reply(`Your prayers have been received, and new PACT is forged...`);
+          interaction.editReply(`We have heard your prayes; your PACT with the Four has been renewed.`);
           break;
         }
       default:
