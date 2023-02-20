@@ -57,7 +57,7 @@ discordBot.on("interactionCreate", async (interaction) => {
           await interaction.deferReply();
           await tokenPayout(accountId);
           await supabase.from("prayers").insert([{ accountId }]);
-          interaction.editReply(`We have heard your prayes; your PACT with the Four has been renewed.`);
+          interaction.editReply(`We have heard your prayers; your PACT with the Four has been renewed.`);
           break;
         }
       default:
