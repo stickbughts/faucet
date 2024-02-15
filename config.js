@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 import path from "path";
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const pathToEnv = path.join(__dirname, '/.env');
-dotenv.config({path: pathToEnv});
+const pathToEnv = path.join(__dirname, "/.env");
+dotenv.config({ path: pathToEnv });
 
 export const DISCORD_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID;
 export const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
@@ -14,11 +14,13 @@ export const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 export const HEDERA_NETWORK = process.env.HEDERA_NETWORK;
 
 export const HEDERA_OPERATOR_ID = process.env.HEDERA_OPERATOR_ID;
-export const HEDERA_OPERATOR_PRIVATE_KEY = process.env.HEDERA_OPERATOR_PRIVATE_KEY;
+export const HEDERA_OPERATOR_PRIVATE_KEY =
+  process.env.HEDERA_OPERATOR_PRIVATE_KEY;
 
 export const HEDERA_TOKEN_DECIMALS = process.env.HEDERA_TOKEN_DECIMALS;
 export const HEDERA_TOKEN_DRIP_RATE = process.env.HEDERA_TOKEN_DRIP_RATE;
 export const HEDERA_TOKEN_ID = process.env.HEDERA_TOKEN_ID;
+export const NFT_ID = process.env.NFT_ID;
 
 export const HEDERA_REST_API_VERSION = process.env.HEDERA_REST_API_VERSION;
 
@@ -35,4 +37,4 @@ export const HEDERA_BASE_URL = (() => {
     case "previewnet":
       return `https://previewnet.mirrornode.hedera.com/api/${HEDERA_REST_API_VERSION}`;
   }
-})()
+})();
