@@ -1,5 +1,5 @@
 import { Client as DiscordClient, IntentsBitField } from "discord.js";
-import { tokenPayout, tokenAssociationCheck } from "./hedera.js";
+import { tokenPayout, tokenAssociationCheck, nftCheck } from "./hedera.js";
 import { registerCommands } from "./commands.js";
 import { supabase } from "./db.js";
 import { clearTableEvery24Hours } from "./cronjob.js";
@@ -58,6 +58,15 @@ discordBot.on("interactionCreate", async (interaction) => {
             );
             break;
           }
+
+          const isNftOwner = await nftCheck(accountId);
+          if (!isNftOwner) {
+            interaction.reply(
+              `You do not own the NFT with ID: ${config.NFT_ID}`
+            );
+            break;
+          }
+
           await interaction.deferReply();
           await tokenPayout(accountId);
           await supabase.from("pulls").insert([{ accountId }]);
