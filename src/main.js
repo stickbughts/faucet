@@ -22,7 +22,7 @@ discordBot.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
   try {
     switch (interaction.commandName) {
-      case "pray":
+      case "pull":
         const accountId = interaction.options.get("account-id").value;
         // Checks against accountId including:
         // Null or Empty Check, Length Check
@@ -36,7 +36,7 @@ discordBot.on("interactionCreate", async (interaction) => {
           break;
         }
         let { data, error } = await supabase
-          .from("prayers")
+          .from("pulls")
           .select("accountId")
           .eq("accountId", accountId);
         if (error || data.length > 1) {
@@ -46,18 +46,22 @@ discordBot.on("interactionCreate", async (interaction) => {
           break;
         } else if (data.length === 1) {
           const { hrs, mins } = getResetTime();
-          interaction.reply(`Your allotment of PACT was given, check back in ${hrs} hours and ${mins} minutes.`);
+          interaction.reply(
+            `Your allotment of token was given, check back in ${hrs} hours and ${mins} minutes.`
+          );
           break;
         } else {
           const isAssociated = await tokenAssociationCheck(accountId);
           if (!isAssociated) {
-            interaction.reply(`You have not associated with the token ID: ${config.HEDERA_TOKEN_ID}`);
+            interaction.reply(
+              `You have not associated with the token ID: ${config.HEDERA_TOKEN_ID}`
+            );
             break;
           }
           await interaction.deferReply();
           await tokenPayout(accountId);
-          await supabase.from("prayers").insert([{ accountId }]);
-          interaction.editReply(`We have heard your prayers; your PACT with the Four has been renewed.`);
+          await supabase.from("pulls").insert([{ accountId }]);
+          interaction.editReply(`Token pulled succesfully.`);
           break;
         }
       default:
@@ -70,7 +74,8 @@ discordBot.on("interactionCreate", async (interaction) => {
 });
 
 const getResetTime = () => {
-  const resetTime = 24 * 60 - Math.floor((new Date().getTime() / (1000 * 60)) % (24 * 60));
+  const resetTime =
+    24 * 60 - Math.floor((new Date().getTime() / (1000 * 60)) % (24 * 60));
   const hrs = Math.floor(resetTime / 60);
   const mins = Math.floor(resetTime % 60);
   return { hrs, mins };

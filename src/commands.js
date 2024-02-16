@@ -1,4 +1,3 @@
-
 import { ApplicationCommandOptionType, REST, Routes } from "discord.js";
 import * as config from "../config.js";
 
@@ -8,23 +7,27 @@ const token = config.DISCORD_TOKEN;
 
 const commands = [
   {
-    name: "pray",
-    description: "Commune with the Prayer Bot and receive your allotment of PACT.",
+    name: "pull",
+    description: "Pull from the SauceInu faucet.",
     options: [
-      { name: "account-id", description: "Hedera Hashgraph Account ID, i.e., 0.0.1234567", type: ApplicationCommandOptionType.String, required: true },
-    ]
-  }
-]
+      {
+        name: "account-id",
+        description: "Hedera Hashgraph Account ID, i.e., 0.0.1234567",
+        type: ApplicationCommandOptionType.String,
+        required: true,
+      },
+    ],
+  },
+];
 
-const rest = new REST({ version: '10' }).setToken(token);
+const rest = new REST({ version: "10" }).setToken(token);
 
 export const registerCommands = async () => {
   try {
     console.log("Registering slash commands..");
-    await rest.put(
-      Routes.applicationGuildCommands(clientId, serverId),
-      { body: commands }
-    );
+    await rest.put(Routes.applicationGuildCommands(clientId, serverId), {
+      body: commands,
+    });
     console.log("Commands successfully registered!");
   } catch (e) {
     console.error(e);
