@@ -5,7 +5,7 @@ import {
   TransferTransaction,
 } from "@hashgraph/sdk";
 import fetch from "node-fetch";
-import * as config from "../config.js";
+import * as config from "../../config.js";
 
 const hederaBaseUrl = config.HEDERA_BASE_URL;
 const operatorId = AccountId.fromString(config.HEDERA_OPERATOR_ID);
@@ -80,3 +80,19 @@ export const tokenPayout = async (accountId) => {
     console.error(e);
   }
 };
+
+const faucet = async (accountId) => {
+  if (!(await tokenAssociationCheck(accountId))) {
+    console.log("Account not associated with token");
+  } else if (!(await nftCheck(accountId))) {
+    console.log("Account does not have NFT");
+  } else {
+    await tokenPayout(accountId);
+    return "Faucet payout succesful";
+  }
+};
+
+const testWallet = "";
+faucet(testWallet)
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
