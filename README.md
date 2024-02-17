@@ -71,6 +71,7 @@ Obtained from your Supabase settings after starting a new project<br><br>
 2. Logout of the terminal and back in
 
 3. Run the last of the installs below:
+   Note your node version
 
 ```
 nvm install node
