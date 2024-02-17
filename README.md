@@ -76,26 +76,26 @@ Obtained from your Supabase settings after starting a new project<br><br>
 nvm install node
 node -e "console.log('Running Node.js ' + process.version)"
 sudo apt install git
-git clone https://github.com/hhe44/pactbot.git
-cd pactbot
+git clone https://github.com/jbuildsdev/htsBot.git
+cd htsbot
 npm install
 ```
 
 4. Create the service<br>
-   `sudo nano /etc/systemd/system/pactbot.service`
+   `sudo nano /etc/systemd/system/htsbot.service`
 
 ```
 [Unit]
-Description=Pactbot
+Description=htsbot
 After=multi-user.target
 
 [Service]
-ExecStart=/root/.nvm/versions/node/v19.6.1/bin/node /root/pactbot/src/main.js
+ExecStart=/root/.nvm/versions/node/v19.6.1/bin/node /root/htsbot/src/main.js
 Restart=always
 RestartSec=10
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=pactbot
+SyslogIdentifier=htsbot
 User=root
 
 [Install]
@@ -103,4 +103,4 @@ WantedBy=multi-user.target
 ```
 
 5. Start the service<br>
-   `sudo systemctl start pactbot.service`
+   `sudo systemctl start htsbot.service`
