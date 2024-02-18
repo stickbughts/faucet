@@ -59,7 +59,7 @@ discordBot.on("interactionCreate", async (interaction) => {
             break;
           }
 
-          const { isNftOwner, serialNumber } = await nftCheck(accountId);
+          const { isNftOwner, serial } = await nftCheck(accountId);
           if (!isNftOwner) {
             interaction.reply(
               `You do not own the NFT with ID: ${config.NFT_ID}`
@@ -70,7 +70,7 @@ discordBot.on("interactionCreate", async (interaction) => {
           let { data, error } = await supabase
             .from("serials")
             .select("serial")
-            .eq("serial", serialNumber);
+            .eq("serial", serial);
 
           if (error) {
             console.error(`Error: ${error.data}`);
@@ -87,7 +87,13 @@ discordBot.on("interactionCreate", async (interaction) => {
           await interaction.deferReply();
           await tokenPayout(accountId);
           await supabase.from("pulls").insert([{ accountId }]);
-          await supabase.from("serials").insert([{ serialNumber }]);
+          console.log(`Serial Number: ${serial}`);
+          let { supaError } = await supabase
+            .from("serials")
+            .insert([{ serial }]);
+          if (supaError) {
+            console.error(`Error: ${supaError.message}`);
+          }
           interaction.editReply(`Token pulled succesfully.`);
           break;
         }
