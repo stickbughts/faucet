@@ -57,8 +57,8 @@ export const nftCheck = async (accountId) => {
       return { isNftOwner: false, serialNumber: null };
     }
 
-    const serialNumber = data.nfts[0].serial_number;
-    return { isNftOwner: true, serialNumber };
+    const serial = data.nfts[0].serial_number;
+    return { isNftOwner: true, serial };
   } catch (e) {
     console.error(e);
   }

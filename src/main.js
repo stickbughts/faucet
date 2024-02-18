@@ -40,7 +40,7 @@ discordBot.on("interactionCreate", async (interaction) => {
           .select("accountId")
           .eq("accountId", accountId);
         if (error || data.length > 1) {
-          console.error(`Error: ${error.data}`);
+          console.error(`Account pull query Error: ${error.data}`);
           console.error(`Data: ${data}`);
           interaction.reply(`Something went wrong - try again!`);
           break;
@@ -73,7 +73,7 @@ discordBot.on("interactionCreate", async (interaction) => {
             .eq("serial", serial);
 
           if (error) {
-            console.error(`Error: ${error.data}`);
+            console.error(`NFT serial query Error: ${error.data}`);
             interaction.reply(`Something went wrong - try again!`);
             break;
           } else if (data.length > 0) {
@@ -87,12 +87,11 @@ discordBot.on("interactionCreate", async (interaction) => {
           await interaction.deferReply();
           await tokenPayout(accountId);
           await supabase.from("pulls").insert([{ accountId }]);
-          console.log(`Serial Number: ${serial}`);
           let { supaError } = await supabase
             .from("serials")
             .insert([{ serial }]);
           if (supaError) {
-            console.error(`Error: ${supaError.message}`);
+            console.error(`Serial push into table Error: ${supaError.message}`);
           }
           interaction.editReply(`Token pulled succesfully.`);
           break;
