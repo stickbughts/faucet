@@ -18,11 +18,11 @@ export const nftCheck = async (accountId) => {
     }
     if (data.nfts.length === 0) {
       // The user does not own the gating NFT
-      return { isNftOwner: false, serialNumber: null };
+      return { isNftOwner: false, serial: null };
     }
 
-    const serialNumber = data.nfts[0].serial_number;
-    return { isNftOwner: true, serialNumber };
+    const serial = data.nfts[0].serial_number;
+    return { isNftOwner: true, serial };
   } catch (e) {
     console.error(e);
   }
