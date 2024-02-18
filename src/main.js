@@ -59,7 +59,7 @@ discordBot.on("interactionCreate", async (interaction) => {
             break;
           }
 
-          const isNftOwner = await nftCheck(accountId);
+          const { isNftOwner, serialNumber } = await nftCheck(accountId);
           if (!isNftOwner) {
             interaction.reply(
               `You do not own the NFT with ID: ${config.NFT_ID}`
