@@ -40,7 +40,7 @@ discordBot.on("interactionCreate", async (interaction) => {
           .select("accountId")
           .eq("accountId", accountId);
         if (error || data.length > 1) {
-          console.error(`Error: ${error.data}`);
+          console.error(`Account pull query Error: ${error.data}`);
           console.error(`Data: ${data}`);
           interaction.reply(`Something went wrong - try again!`);
           break;
@@ -59,7 +59,7 @@ discordBot.on("interactionCreate", async (interaction) => {
             break;
           }
 
-          const isNftOwner = await nftCheck(accountId);
+          const { isNftOwner, serial } = await nftCheck(accountId);
           if (!isNftOwner) {
             interaction.reply(
               `You do not own the NFT with ID: ${config.NFT_ID}`
@@ -67,9 +67,32 @@ discordBot.on("interactionCreate", async (interaction) => {
             break;
           }
 
+          let { data, error } = await supabase
+            .from("serials")
+            .select("serial")
+            .eq("serial", serial);
+
+          if (error) {
+            console.error(`NFT serial query Error: ${error.data}`);
+            interaction.reply(`Something went wrong - try again!`);
+            break;
+          } else if (data.length > 0) {
+            const { hrs, mins } = getResetTime();
+            interaction.reply(
+              `This NFT has already claimed the faucet. Check back in  ${hrs} hours and ${mins} minutes.`
+            );
+            break;
+          }
+
           await interaction.deferReply();
           await tokenPayout(accountId);
           await supabase.from("pulls").insert([{ accountId }]);
+          let { supaError } = await supabase
+            .from("serials")
+            .insert([{ serial }]);
+          if (supaError) {
+            console.error(`Serial push into table Error: ${supaError.message}`);
+          }
           interaction.editReply(`Token pulled succesfully.`);
           break;
         }
