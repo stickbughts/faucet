@@ -67,9 +67,27 @@ discordBot.on("interactionCreate", async (interaction) => {
             break;
           }
 
+          let { data, error } = await supabase
+            .from("serials")
+            .select("serial")
+            .eq("serial", serialNumber);
+
+          if (error) {
+            console.error(`Error: ${error.data}`);
+            interaction.reply(`Something went wrong - try again!`);
+            break;
+          } else if (data.length > 0) {
+            const { hrs, mins } = getResetTime();
+            interaction.reply(
+              `This NFT has already claimed the faucet. Check back in  ${hrs} hours and ${mins} minutes.`
+            );
+            break;
+          }
+
           await interaction.deferReply();
           await tokenPayout(accountId);
           await supabase.from("pulls").insert([{ accountId }]);
+          await supabase.from("serials").insert([{ serialNumber }]);
           interaction.editReply(`Token pulled succesfully.`);
           break;
         }
