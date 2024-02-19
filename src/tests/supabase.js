@@ -7,13 +7,14 @@ const supabaseUrl = config.SUPABASE_URL;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 supabase
-  .from("pulls")
-  .select("*")
+  .from("serials")
+  .delete()
+  .neq("serial", 0)
   .then((response) => {
     if (response.error) {
-      console.error("Error fetching data:", response.error);
+      console.error("Error deleting data:", response.error);
     } else {
-      console.log("Fetched data:", response.data);
+      console.log("Deleted data:", response.data);
     }
   })
   .catch((error) => console.error("Error:", error));
