@@ -11,7 +11,7 @@ export const clearTableEvery24Hours = () => {
       );
       // Workaround since supabase doesn't have method for table truncation (for safety reasons)
       await supabase.from("pulls").delete().neq("accountId", 0);
-      await supabase.from("serials").delete();
+      await supabase.from("serials").delete().neq("serial", 0);
     },
     {
       scheduled: true,
