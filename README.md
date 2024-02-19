@@ -23,12 +23,12 @@ Fund the wallet with your HTS token and some HBAR to cover gas.
 
 Add the following information to your env file:
 
-HEDERA_OPERATOR_ID = your faucet wallet's account ID
-HEDERA_OPERATOR_PRIVATE_LEY = the private key of the faucet wallet (keep secret)
-HEDERA_TOKEN_ID = the token ID of the HTS token you wish to distribute with the faucet
-HEDERA_TOKEN_DECIMALS = the decimal precision of your token
-HEDERA_TOKEN_DRIP_RATE = how many tokens the faucet should distribute to each user per 24 hours
-NFT_ID = the ID of the NFT that gates access to the faucet
+HEDERA_OPERATOR_ID = your faucet wallet's account ID <br>
+HEDERA_OPERATOR_PRIVATE_LEY = the private key of the faucet wallet (keep secret) <br>
+HEDERA_TOKEN_ID = the token ID of the HTS token you wish to distribute with the faucet <br>
+HEDERA_TOKEN_DECIMALS = the decimal precision of your token <br>
+HEDERA_TOKEN_DRIP_RATE = how many tokens the faucet should distribute to each user per 24 hours <br>
+NFT_ID = the ID of the NFT that gates access to the faucet<br>
 
 ## Discord Setup
 
