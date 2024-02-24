@@ -62,10 +62,6 @@ discordBot.on("interactionCreate", async (interaction) => {
           // Call the nftCheck function with the account ID
           const { isNftOwner, serials } = await nftCheck(accountId);
 
-          console.log(`Account ID: ${accountId}`);
-          console.log(`Is NFT Owner: ${isNftOwner}`);
-          console.log(`Serials: ${serials}`);
-
           // If the user doesn't own any NFTs, send a reply and break
           if (!isNftOwner) {
             interaction.reply(`You do not own the NFT ${config.NFT_ID}`);
@@ -76,15 +72,11 @@ discordBot.on("interactionCreate", async (interaction) => {
 
           // Loop through each serial number owned by the user
           for (let serial of serials) {
-            console.log(`Checking serial: ${serial}`);
-
             // Query the database for the serial number
             let { data, error } = await supabase
               .from("serials")
               .select("serial")
               .eq("serial", serial);
-
-            console.log(`Database response: ${JSON.stringify(data)}`);
 
             // If there's an error, log it, send a reply, and break
             if (error) {
@@ -96,7 +88,7 @@ discordBot.on("interactionCreate", async (interaction) => {
             // set unclaimedNFT to the serial number and break the loop
             else if (data.length === 0) {
               unclaimedNFT = serial;
-              console.log(`Found unclaimed NFT: ${unclaimedNFT}`);
+
               break;
             }
           }
