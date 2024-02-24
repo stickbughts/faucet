@@ -59,42 +59,72 @@ discordBot.on("interactionCreate", async (interaction) => {
             break;
           }
 
-          const { isNftOwner, serial } = await nftCheck(accountId);
+          // Call the nftCheck function with the account ID
+          const { isNftOwner, serials } = await nftCheck(accountId);
+
+          // If the user doesn't own any NFTs, send a reply and break
           if (!isNftOwner) {
-            interaction.reply(
-              `You do not own the NFT with ID: ${config.NFT_ID}`
-            );
+            interaction.reply(`You do not own the NFT ${config.NFT_ID}`);
             break;
           }
 
-          let { data, error } = await supabase
-            .from("serials")
-            .select("serial")
-            .eq("serial", serial);
+          let unclaimedNFT = null;
 
-          if (error) {
-            console.error(`NFT serial query Error: ${error.data}`);
-            interaction.reply(`Something went wrong - try again!`);
-            break;
-          } else if (data.length > 0) {
+          // Loop through each serial number owned by the user
+          for (let serial of serials) {
+            // Query the database for the serial number
+            let { data, error } = await supabase
+              .from("serials")
+              .select("serial")
+              .eq("serial", serial);
+
+            // If there's an error, log it, send a reply, and break
+            if (error) {
+              console.error(`NFT serial query Error: ${error.data}`);
+              interaction.reply(`Something went wrong - try again!`);
+              break;
+            }
+            // If the serial number isn't in the database (i.e., it hasn't claimed the faucet yet),
+            // set unclaimedNFT to the serial number and break the loop
+            else if (data.length === 0) {
+              unclaimedNFT = serial;
+
+              break;
+            }
+          }
+
+          // If no unclaimed NFT was found, send a reply and break
+          if (!unclaimedNFT) {
             const { hrs, mins } = getResetTime();
             interaction.reply(
-              `This NFT has already claimed the faucet. Check back in  ${hrs} hours and ${mins} minutes.`
+              `All your NFTs have already claimed the faucet. Check back in  ${hrs} hours and ${mins} minutes.`
             );
             break;
           }
 
+          // Defer the reply to prevent the interaction from failing due to a timeout
           await interaction.deferReply();
+
+          // Pay out the token to the account
           await tokenPayout(accountId);
+
+          // Record the transaction in the "pulls" table in the database
           await supabase.from("pulls").insert([{ accountId }]);
+
+          // Insert the unclaimed NFT's serial number into the "serials" table to indicate that it has claimed the faucet
           let { supaError } = await supabase
             .from("serials")
-            .insert([{ serial }]);
+            .insert([{ serial: unclaimedNFT }]);
+
+          // If there's an error, log it
           if (supaError) {
             console.error(`Serial push into table Error: ${supaError.message}`);
           }
+
+          // Edit the reply to the user to indicate that the token has been successfully pulled
           interaction.editReply(`Token pulled succesfully.`);
           break;
+          // ...
         }
       default:
         interaction.reply(`I don't know that command!`);

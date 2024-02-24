@@ -6,10 +6,9 @@ const nftId = config.NFT_ID;
 const hederaBaseUrl = config.HEDERA_BASE_URL;
 
 const testWallet = "";
-
 export const nftCheck = async (accountId) => {
   try {
-    const url = `${hederaBaseUrl}/accounts/${accountId}/nfts?limit=1&token.id=${nftId}`;
+    const url = `${hederaBaseUrl}/accounts/${accountId}/nfts?token.id=${nftId}`;
     const data = await fetch(url).then((response) => response.json());
     if (!data || !data.nfts) {
       throw new Error(
@@ -18,16 +17,15 @@ export const nftCheck = async (accountId) => {
     }
     if (data.nfts.length === 0) {
       // The user does not own the gating NFT
-      return { isNftOwner: false, serial: null };
+      return { isNftOwner: false, serials: [] };
     }
 
-    const serial = data.nfts[0].serial_number;
-    return { isNftOwner: true, serial };
+    const serials = data.nfts.map((nft) => nft.serial_number);
+    return { isNftOwner: true, serials };
   } catch (e) {
     console.error(e);
   }
 };
-
 const accountId = testWallet; // replace with your account id
 nftCheck(accountId)
   .then((result) => console.log(result))
