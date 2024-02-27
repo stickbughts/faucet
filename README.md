@@ -19,7 +19,7 @@ The keys and token details need to be saved into an environment file ( .env). On
 ## Wallet Setup
 
 The best practice is to set up a dedicated wallet to fund your faucet. Create a new Hedera account, and note its token ID and private key.
-Fund the wallet with your HTS token and some HBAR to cover gas. As of 2024, an HTS transfer costs $0.002 . 
+Fund the wallet with your HTS token and some HBAR to cover gas. As of 2024, an HTS transfer costs $0.002 .
 
 Add the following information to your env file:
 
@@ -51,10 +51,12 @@ Refer to the tutorial [here](https://www.youtube.com/watch?v=Q7Hgp6bg0kI&list=PL
 
 Create a new account and start a new project.
 Under "Project Configuration", copy the URL into SUPABASE_URL
-Copy the service key into SUPABASE_SERVICE_KEY
+Locate the key labeled service_role <b>secret </b> Copy the service key into SUPABASE_SERVICE_KEY
 
 Create a table named `fetches`, and create a column called `accountId` of type `text`.
-Create a second table named `serials`, and create a column called `serial` of type `int8`.
+Create a second table named `serials`, and create a column called `serial` of type `text`.
+
+These tables can be viewed daily to see which accounts have used the faucet, and which NFTs were used.
 
 **DO NOT SHARE YOUR SERVICE KEY AND KEEP IT ONLY TO THE BACKEND!!!**
 

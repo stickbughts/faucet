@@ -54,7 +54,7 @@ discordBot.on("interactionCreate", async (interaction) => {
           const isAssociated = await tokenAssociationCheck(accountId);
           if (!isAssociated) {
             interaction.reply(
-              `You have not associated Sauce Inu: ${config.HEDERA_TOKEN_ID}`
+              `You have not associated SauceInu: ${config.HEDERA_TOKEN_ID}`
             );
             break;
           }
