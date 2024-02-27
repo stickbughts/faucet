@@ -109,8 +109,8 @@ The following commands you should be able to copy, then right click inside the c
 nvm install node
 node -e "console.log('Running Node.js ' + process.version)"
 sudo apt install git
-git clone https://github.com/jbuildsdev/sauceinubot.git
-cd sauceinubot
+git clone https://github.com/jbuildsdev/htsbot.git
+cd htsbot
 npm install
 ```
 
@@ -119,20 +119,20 @@ npm install
    Paste your env values into the file. Press ctrl+o to save, and hit enter. Press ctrl+x to exit.
 
 5. Create the service<br>
-   `sudo nano /etc/systemd/system/sauceinubot.service`
+   `sudo nano /etc/systemd/system/htsbot.service`
 
 ```
 [Unit]
-Description=sauceinubot
+Description=htsbot
 After=multi-user.target
 
 [Service]
-ExecStart=/root/.nvm/versions/node/v21.6.2/bin/node /root/sauceinubot/src/main.js
+ExecStart=/root/.nvm/versions/node/v21.6.2/bin/node /root/htsbot/src/main.js
 Restart=always
 RestartSec=10
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=sauceinubot
+SyslogIdentifier=htsbot
 User=root
 
 [Install]
@@ -143,9 +143,9 @@ Be sure to replace the node version in ExecStart with your current node version,
 Press crtl+o to save, and ctrl+x to exit.
 
 6. Start the service<br>
-   `sudo systemctl start sauceinubot`
+   `sudo systemctl start htsbot`
 
-Check if it worked. Run the command `systemctl status sauceinubot`
+Check if it worked. Run the command `systemctl status htsbot`
 You should see Active: active (running)
 
 7. Join Bot to server<br>
