@@ -10,7 +10,7 @@ export const clearTableEvery24Hours = () => {
         `Table cleared at: ${Math.floor(new Date().getTime() / 1000)}`
       );
       // Workaround since supabase doesn't have method for table truncation (for safety reasons)
-      await supabase.from("pulls").delete().neq("accountId", 0);
+      await supabase.from("fetches").delete().neq("accountId", 0);
       await supabase.from("serials").delete().neq("serial", 0);
     },
     {

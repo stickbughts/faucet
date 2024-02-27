@@ -36,11 +36,11 @@ discordBot.on("interactionCreate", async (interaction) => {
           break;
         }
         let { data, error } = await supabase
-          .from("pulls")
+          .from("fetches")
           .select("accountId")
           .eq("accountId", accountId);
         if (error || data.length > 1) {
-          console.error(`Account pull query Error: ${error.data}`);
+          console.error(`Account fetch query Error: ${error.data}`);
           console.error(`Data: ${data}`);
           interaction.reply(`Something went wrong - try again!`);
           break;
@@ -110,8 +110,8 @@ discordBot.on("interactionCreate", async (interaction) => {
           // Pay out the token to the account
           await tokenPayout(accountId);
 
-          // Record the transaction in the "pulls" table in the database
-          await supabase.from("pulls").insert([{ accountId }]);
+          // Record the transaction in the "fetches" table in the database
+          await supabase.from("fetches").insert([{ accountId }]);
 
           // Insert the unclaimed NFT's serial number into the "serials" table to indicate that it has claimed the faucet
           let { supaError } = await supabase
@@ -123,9 +123,9 @@ discordBot.on("interactionCreate", async (interaction) => {
             console.error(`Serial push into table Error: ${supaError.message}`);
           }
 
-          // Edit the reply to the user to indicate that the token has been successfully pulled
+          // Edit the reply to the user to indicate that the token has been successfully fetched
           interaction.editReply(
-            `Congratulations you’ve received FLAGSHIP V2 rewards +10 SauceInu was sent to your linked account. See you tomorrow.`
+            `Congratulations you've received FLAGSHIP V2 rewards +10 SauceInu was sent to your linked account. See you tomorrow!`
           );
           break;
           // ...

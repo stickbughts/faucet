@@ -3,7 +3,7 @@
 ## Description
 
 This discord bot is intended to disburse a HTS tokens to holders of a specific NFT.
-Owners of the NFT are entitled to a pull of the faucet every 24 hours. This faucet employs sybil checks, so a user cannot send the same NFT to themselves and pull from the faucet multiple times. If you purchase an NFT that has been used to pull from the faucet today, wait until the faucet reset for pulls to resume normally.
+Owners of the NFT are entitled to a fetch of the faucet every 24 hours. This faucet employs sybil checks, so a user cannot send the same NFT to themselves and fetch from the faucet multiple times. If you purchase an NFT that has already been used to fetch from the faucet today, wait until the faucet reset for fetches to resume normally.
 
 The bot is an interaction of three technologies: Hedera, Discord, and Supabase.
 Interacting with these three technologies requires a hedera private key, a discord client secret key, and your Supabase key. Keep all three secret.
@@ -19,7 +19,7 @@ The keys and token details need to be saved into an environment file ( .env). On
 ## Wallet Setup
 
 The best practice is to set up a dedicated wallet to fund your faucet. Create a new Hedera account, and note its token ID and private key.
-Fund the wallet with your HTS token and some HBAR to cover gas.
+Fund the wallet with your HTS token and some HBAR to cover gas. As of 2024, an HTS transfer costs $0.002 . 
 
 Add the following information to your env file:
 
@@ -53,7 +53,7 @@ Create a new account and start a new project.
 Under "Project Configuration", copy the URL into SUPABASE_URL
 Copy the service key into SUPABASE_SERVICE_KEY
 
-Create a table named `pulls`, and create a column called `accountId` of type `text`.
+Create a table named `fetches`, and create a column called `accountId` of type `text`.
 Create a second table named `serials`, and create a column called `serial` of type `int8`.
 
 **DO NOT SHARE YOUR SERVICE KEY AND KEEP IT ONLY TO THE BACKEND!!!**
@@ -152,4 +152,4 @@ You should see Active: active (running)
    Return to the discord developer page.
    Go to URL generator, and paste the URL into the brower. Join your bot to your Discord server.
 
-You can now begin pulling tokens from your faucet using the command /pull accountID
+You can now begin fetching tokens from your faucet using the command /fetch accountID

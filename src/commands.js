@@ -7,8 +7,8 @@ const token = config.DISCORD_TOKEN;
 
 const commands = [
   {
-    name: "pull",
-    description: "Pull from the faucet.",
+    name: "fetch",
+    description: "Fetch from the  Sauce Inu faucet.",
     options: [
       {
         name: "account-id",
