@@ -22,7 +22,7 @@ discordBot.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
   try {
     switch (interaction.commandName) {
-      case "pull":
+      case "fetch":
         const accountId = interaction.options.get("account-id").value;
         // Checks against accountId including:
         // Null or Empty Check, Length Check
@@ -47,14 +47,14 @@ discordBot.on("interactionCreate", async (interaction) => {
         } else if (data.length === 1) {
           const { hrs, mins } = getResetTime();
           interaction.reply(
-            `Your allotment of token was given, check back in ${hrs} hours and ${mins} minutes.`
+            `Hello Saucy explorer, you have used /fetch already today, try again in ${hrs} hours and ${mins} minutes.`
           );
           break;
         } else {
           const isAssociated = await tokenAssociationCheck(accountId);
           if (!isAssociated) {
             interaction.reply(
-              `You have not associated with the token ID: ${config.HEDERA_TOKEN_ID}`
+              `You have not associated Sauce Inu: ${config.HEDERA_TOKEN_ID}`
             );
             break;
           }
@@ -64,7 +64,9 @@ discordBot.on("interactionCreate", async (interaction) => {
 
           // If the user doesn't own any NFTs, send a reply and break
           if (!isNftOwner) {
-            interaction.reply(`You do not own the NFT ${config.NFT_ID}`);
+            interaction.reply(
+              `You do not own the FLAGSHIP V2 NFT :  ${config.NFT_ID}`
+            );
             break;
           }
 
@@ -122,7 +124,9 @@ discordBot.on("interactionCreate", async (interaction) => {
           }
 
           // Edit the reply to the user to indicate that the token has been successfully pulled
-          interaction.editReply(`Token pulled succesfully.`);
+          interaction.editReply(
+            `Congratulations you’ve received FLAGSHIP V2 rewards +10 SauceInu was sent to your linked account. See you tomorrow.`
+          );
           break;
           // ...
         }
