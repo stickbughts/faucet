@@ -125,7 +125,7 @@ discordBot.on("interactionCreate", async (interaction) => {
 
           // Edit the reply to the user to indicate that the token has been successfully fetched
           interaction.editReply(
-            `Congratulations you've received FLAGSHIP V2 rewards +10 SauceInu was sent to your linked account. See you tomorrow!`
+            `Congratulations you've received FLAGSHIP V2 rewards +10 SauceInu was sent to your wallet. See you tomorrow!`
           );
           break;
           // ...
