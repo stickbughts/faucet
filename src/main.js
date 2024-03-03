@@ -22,13 +22,17 @@ discordBot.on("messageCreate", async (message) => {
   const accountId = message.content.split(" ")[1];
 
   if (!accountId) {
-    message.channel.send(`Please provide an account ID.`);
+    message.channel.send(
+      `<@${message.author.id}>, please provide an account ID.`
+    );
     return;
   } else if (
     accountId.length > 32 ||
     !/^\d{1}\.\d{1}\.\d{2,16}$/.test(accountId)
   ) {
-    message.channel.send(`That account ID is not valid.`);
+    message.channel.send(
+      `<@${message.author.id}>, that account ID is not valid.`
+    );
     return;
   }
 
@@ -40,86 +44,74 @@ discordBot.on("messageCreate", async (message) => {
   if (error || data.length > 1) {
     console.error(`Account fetch query Error: ${error.data}`);
     console.error(`Data: ${data}`);
-    message.channel.send(`Something went wrong - try again!`);
+    message.channel.send(
+      `<@${message.author.id}>, something went wrong - try again!`
+    );
     return;
   } else if (data.length === 1) {
     const { hrs, mins } = getResetTime();
     message.channel.send(
-      `Hello Saucy explorer, you have used !fetch already today, try again in ${hrs} hours and ${mins} minutes.`
+      `<@${message.author.id}> Hello Saucy explorer, you have used !fetch already today, try again in ${hrs} hours and ${mins} minutes.`
     );
     return;
   } else {
     const isAssociated = await tokenAssociationCheck(accountId);
     if (!isAssociated) {
       message.channel.send(
-        `You have not associated SauceInu: ${config.HEDERA_TOKEN_ID}`
+        `<@${message.author.id}>, you have not associated SauceInu: ${config.HEDERA_TOKEN_ID}`
       );
       return;
     }
 
-    // Call the nftCheck function with the account ID
     const { isNftOwner, serials } = await nftCheck(accountId);
 
-    // If the user doesn't own any NFTs, send a reply and break
     if (!isNftOwner) {
       message.channel.send(
-        `You do not own the FLAGSHIP V2 NFT :  ${config.NFT_ID}`
+        `<@${message.author.id}>, you do not own the FLAGSHIP V2 NFT :  ${config.NFT_ID}`
       );
       return;
     }
 
     let unclaimedNFT = null;
 
-    // Loop through each serial number owned by the user
     for (let serial of serials) {
-      // Query the database for the serial number
       let { data, error } = await supabase
         .from("serials")
         .select("serial")
         .eq("serial", serial);
 
-      // If there's an error, log it, send a reply, and break
       if (error) {
         console.error(`NFT serial query Error: ${error.data}`);
-        message.channel.send(`Something went wrong - try again!`);
+        message.channel.send(
+          `<@${message.author.id}>, something went wrong - try again!`
+        );
         return;
-      }
-      // If the serial number isn't in the database (i.e., it hasn't claimed the faucet yet),
-      // set unclaimedNFT to the serial number and break the loop
-      else if (data.length === 0) {
+      } else if (data.length === 0) {
         unclaimedNFT = serial;
         break;
       }
     }
 
-    // If no unclaimed NFT was found, send a reply and break
     if (!unclaimedNFT) {
       const { hrs, mins } = getResetTime();
       message.channel.send(
-        `All your NFTs have already claimed the faucet. Check back in  ${hrs} hours and ${mins} minutes.`
+        `<@${message.author.id}>, all your NFTs have already claimed the faucet. Check back in  ${hrs} hours and ${mins} minutes.`
       );
       return;
     }
 
-    // Pay out the token to the account
     await tokenPayout(accountId);
-
-    // Record the transaction in the "fetches" table in the database
     await supabase.from("fetches").insert([{ accountId }]);
-
-    // Insert the unclaimed NFT's serial number into the "serials" table to indicate that it has claimed the faucet
     let { supaError } = await supabase
       .from("serials")
       .insert([{ serial: unclaimedNFT }]);
 
-    // If there's an error, log it
     if (supaError) {
       console.error(`Serial push into table Error: ${supaError.message}`);
     }
 
-    // Send a reply to the user to indicate that the token has been successfully fetched
     message.channel.send(
-      `Congratulations you've received FLAGSHIP V2 rewards + ${config.HEDERA_TOKEN_DRIP_RATE} SauceInu was sent to your wallet. See you tomorrow!`
+      `<@${message.author.id}>, congratulations you've received FLAGSHIP V2 rewards + ${config.HEDERA_TOKEN_DRIP_RATE} SauceInu was sent to your wallet. See you tomorrow!`
     );
   }
 });
