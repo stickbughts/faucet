@@ -120,6 +120,10 @@ npm install
    `sudo nano .env`
    Paste your env values into the file. Press ctrl+o to save, and hit enter. Press ctrl+x to exit.
 
+   Note: If this is a redeployment of the bot to use !fetch instead of /fetch, you need to clear the registered commands from Discords server. To do so run the following commands:
+   `cd src`
+   `node clearCommands`
+
 5. Create the service<br>
    `sudo nano /etc/systemd/system/sauceinubot.service`
 
