@@ -1,6 +1,5 @@
 import { Client as DiscordClient, IntentsBitField } from "discord.js";
 import { tokenPayout, tokenAssociationCheck, nftCheck } from "./hedera.js";
-import { registerCommands } from "./commands.js";
 import { supabase } from "./db.js";
 import { clearTableEvery24Hours } from "./cronjob.js";
 import * as config from "../config.js";
@@ -15,7 +14,6 @@ const discordBot = new DiscordClient({
 
 discordBot.on("ready", (c) => {
   console.log(`${c.user.tag} has logged in`);
-  registerCommands();
 });
 
 discordBot.on("messageCreate", async (message) => {
