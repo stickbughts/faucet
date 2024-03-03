@@ -18,124 +18,111 @@ discordBot.on("ready", (c) => {
   registerCommands();
 });
 
-discordBot.on("interactionCreate", async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-  try {
-    switch (interaction.commandName) {
-      case "fetch":
-        const accountId = interaction.options.get("account-id").value;
-        // Checks against accountId including:
-        // Null or Empty Check, Length Check
-        // Regex Check for 0.0.1234567... format
-        if (
-          !accountId ||
-          accountId.length > 32 ||
-          !/^\d{1}\.\d{1}\.\d{2,16}$/.test(accountId)
-        ) {
-          interaction.reply(`That account ID is not valid.`);
-          break;
-        }
-        let { data, error } = await supabase
-          .from("fetches")
-          .select("accountId")
-          .eq("accountId", accountId);
-        if (error || data.length > 1) {
-          console.error(`Account fetch query Error: ${error.data}`);
-          console.error(`Data: ${data}`);
-          interaction.reply(`Something went wrong - try again!`);
-          break;
-        } else if (data.length === 1) {
-          const { hrs, mins } = getResetTime();
-          interaction.reply(
-            `Hello Saucy explorer, you have used /fetch already today, try again in ${hrs} hours and ${mins} minutes.`
-          );
-          break;
-        } else {
-          const isAssociated = await tokenAssociationCheck(accountId);
-          if (!isAssociated) {
-            interaction.reply(
-              `You have not associated SauceInu: ${config.HEDERA_TOKEN_ID}`
-            );
-            break;
-          }
+discordBot.on("messageCreate", async (message) => {
+  if (!message.content.startsWith("!fetch") || message.author.bot) return;
 
-          // Call the nftCheck function with the account ID
-          const { isNftOwner, serials } = await nftCheck(accountId);
+  const accountId = message.content.split(" ")[1];
 
-          // If the user doesn't own any NFTs, send a reply and break
-          if (!isNftOwner) {
-            interaction.reply(
-              `You do not own the FLAGSHIP V2 NFT :  ${config.NFT_ID}`
-            );
-            break;
-          }
+  if (!accountId) {
+    message.channel.send(`Please provide an account ID.`);
+    return;
+  } else if (
+    accountId.length > 32 ||
+    !/^\d{1}\.\d{1}\.\d{2,16}$/.test(accountId)
+  ) {
+    message.channel.send(`That account ID is not valid.`);
+    return;
+  }
 
-          let unclaimedNFT = null;
+  let { data, error } = await supabase
+    .from("fetches")
+    .select("accountId")
+    .eq("accountId", accountId);
 
-          // Loop through each serial number owned by the user
-          for (let serial of serials) {
-            // Query the database for the serial number
-            let { data, error } = await supabase
-              .from("serials")
-              .select("serial")
-              .eq("serial", serial);
-
-            // If there's an error, log it, send a reply, and break
-            if (error) {
-              console.error(`NFT serial query Error: ${error.data}`);
-              interaction.reply(`Something went wrong - try again!`);
-              break;
-            }
-            // If the serial number isn't in the database (i.e., it hasn't claimed the faucet yet),
-            // set unclaimedNFT to the serial number and break the loop
-            else if (data.length === 0) {
-              unclaimedNFT = serial;
-
-              break;
-            }
-          }
-
-          // If no unclaimed NFT was found, send a reply and break
-          if (!unclaimedNFT) {
-            const { hrs, mins } = getResetTime();
-            interaction.reply(
-              `All your NFTs have already claimed the faucet. Check back in  ${hrs} hours and ${mins} minutes.`
-            );
-            break;
-          }
-
-          // Defer the reply to prevent the interaction from failing due to a timeout
-          await interaction.deferReply();
-
-          // Pay out the token to the account
-          await tokenPayout(accountId);
-
-          // Record the transaction in the "fetches" table in the database
-          await supabase.from("fetches").insert([{ accountId }]);
-
-          // Insert the unclaimed NFT's serial number into the "serials" table to indicate that it has claimed the faucet
-          let { supaError } = await supabase
-            .from("serials")
-            .insert([{ serial: unclaimedNFT }]);
-
-          // If there's an error, log it
-          if (supaError) {
-            console.error(`Serial push into table Error: ${supaError.message}`);
-          }
-
-          // Edit the reply to the user to indicate that the token has been successfully fetched
-          interaction.editReply(
-            `Congratulations you've received FLAGSHIP V2 rewards + ${config.HEDERA_TOKEN_DRIP_RATE} SauceInu was sent to your wallet. See you tomorrow!`
-          );
-          break;
-          // ...
-        }
-      default:
-        interaction.reply(`I don't know that command!`);
-        break;
+  if (error || data.length > 1) {
+    console.error(`Account fetch query Error: ${error.data}`);
+    console.error(`Data: ${data}`);
+    message.channel.send(`Something went wrong - try again!`);
+    return;
+  } else if (data.length === 1) {
+    const { hrs, mins } = getResetTime();
+    message.channel.send(
+      `Hello Saucy explorer, you have used !fetch already today, try again in ${hrs} hours and ${mins} minutes.`
+    );
+    return;
+  } else {
+    const isAssociated = await tokenAssociationCheck(accountId);
+    if (!isAssociated) {
+      message.channel.send(
+        `You have not associated SauceInu: ${config.HEDERA_TOKEN_ID}`
+      );
+      return;
     }
-  } catch (e) {
-    console.error(e);
+
+    // Call the nftCheck function with the account ID
+    const { isNftOwner, serials } = await nftCheck(accountId);
+
+    // If the user doesn't own any NFTs, send a reply and break
+    if (!isNftOwner) {
+      message.channel.send(
+        `You do not own the FLAGSHIP V2 NFT :  ${config.NFT_ID}`
+      );
+      return;
+    }
+
+    let unclaimedNFT = null;
+
+    // Loop through each serial number owned by the user
+    for (let serial of serials) {
+      // Query the database for the serial number
+      let { data, error } = await supabase
+        .from("serials")
+        .select("serial")
+        .eq("serial", serial);
+
+      // If there's an error, log it, send a reply, and break
+      if (error) {
+        console.error(`NFT serial query Error: ${error.data}`);
+        message.channel.send(`Something went wrong - try again!`);
+        return;
+      }
+      // If the serial number isn't in the database (i.e., it hasn't claimed the faucet yet),
+      // set unclaimedNFT to the serial number and break the loop
+      else if (data.length === 0) {
+        unclaimedNFT = serial;
+        break;
+      }
+    }
+
+    // If no unclaimed NFT was found, send a reply and break
+    if (!unclaimedNFT) {
+      const { hrs, mins } = getResetTime();
+      message.channel.send(
+        `All your NFTs have already claimed the faucet. Check back in  ${hrs} hours and ${mins} minutes.`
+      );
+      return;
+    }
+
+    // Pay out the token to the account
+    await tokenPayout(accountId);
+
+    // Record the transaction in the "fetches" table in the database
+    await supabase.from("fetches").insert([{ accountId }]);
+
+    // Insert the unclaimed NFT's serial number into the "serials" table to indicate that it has claimed the faucet
+    let { supaError } = await supabase
+      .from("serials")
+      .insert([{ serial: unclaimedNFT }]);
+
+    // If there's an error, log it
+    if (supaError) {
+      console.error(`Serial push into table Error: ${supaError.message}`);
+    }
+
+    // Send a reply to the user to indicate that the token has been successfully fetched
+    message.channel.send(
+      `Congratulations you've received FLAGSHIP V2 rewards + ${config.HEDERA_TOKEN_DRIP_RATE} SauceInu was sent to your wallet. See you tomorrow!`
+    );
   }
 });
 

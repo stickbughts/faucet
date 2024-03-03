@@ -23,8 +23,6 @@ export const client = Client.forName(config.HEDERA_NETWORK).setOperator(
 
 export const tokenAssociationCheck = async (accountId) => {
   try {
-    // Constructed URL example:
-    // https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.3502057/tokens?limit=1&token.id=0.0.3502047
     const url = `${hederaBaseUrl}/accounts/${accountId}/tokens?limit=1&token.id=${tokenId}`;
     const data = await fetch(url).then((response) => response.json());
     if (!data || !data.tokens) {
