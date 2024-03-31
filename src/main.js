@@ -51,14 +51,14 @@ discordBot.on("messageCreate", async (message) => {
   } else if (data.length === 1) {
     const { hrs, mins } = getResetTime();
     message.channel.send(
-      `<@${message.author.id}> Hello Saucy explorer, you have used !fetch already today, try again in ${hrs} hours and ${mins} minutes.`
+      `<@${message.author.id}> Hey there bug fren, you have used !fetch already today, try again in ${hrs} hours and ${mins} minutes.`
     );
     return;
   } else {
     const isAssociated = await tokenAssociationCheck(accountId);
     if (!isAssociated) {
       message.channel.send(
-        `<@${message.author.id}>, you have not associated SauceInu: ${config.HEDERA_TOKEN_ID}`
+        `<@${message.author.id}>, you have not associated Stickbug: ${config.HEDERA_TOKEN_ID}`
       );
       return;
     }
@@ -67,7 +67,7 @@ discordBot.on("messageCreate", async (message) => {
 
     if (!isNftOwner) {
       message.channel.send(
-        `<@${message.author.id}>, you do not own the FLAGSHIP V2 NFT :  ${config.NFT_ID}`
+        `<@${message.author.id}>, you do not own the Stickbug Flagship NFT!  :  ${config.NFT_ID}`
       );
       return;
     }
@@ -111,7 +111,7 @@ discordBot.on("messageCreate", async (message) => {
     }
 
     message.channel.send(
-      `<@${message.author.id}>, congratulations you've received FLAGSHIP V2 rewards + ${config.HEDERA_TOKEN_DRIP_RATE} SauceInu was sent to your wallet. See you tomorrow!`
+      `<@${message.author.id}>, congratulations you've received Stickbug Flagship rewards + ${config.HEDERA_TOKEN_DRIP_RATE} Stickbug was sent to your wallet. See you tomorrow!`
     );
   }
 });
