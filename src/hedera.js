@@ -67,6 +67,7 @@ export const tokenPayout = async (accountId) => {
     const tx = await new TransferTransaction()
       .addTokenTransfer(tokenId, operatorId, -payout)
       .addTokenTransfer(tokenId, accountId, payout)
+      .setTransactionMemo("Stickbug faucet pull!")
       .freezeWith(client)
       .sign(operatorKey);
     const txResponse = await tx.execute(client);
